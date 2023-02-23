@@ -3,11 +3,12 @@ const express = require('express')
 const app = express()
 const PORT = process.env.PORT || 3000;  
 const bodyParser = require('body-parser')
-
 const { MongoClient, ServerApiVersion } = require('mongodb');
-const client = new MongoClient(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 
+const client = new MongoClient(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 app.use(bodyParser.urlencoded({ extended: true }))
+
+app.set('view engine', 'ejs');
 
 async function cxnDB(){
 
@@ -30,7 +31,10 @@ async function cxnDB(){
 
 
 app.get('/', (req, res) => {
-  res.send('Hello World This is Barry 3! <br/> <a href="mongo">mongo</a>');
+  //res.send('Hello World This is Barry 3! <br/> <a href="mongo">mongo</a>');
+
+  res.render('index'); 
+
 })
 
 app.get('/mongo', async (req, res) => {
@@ -42,6 +46,22 @@ app.get('/mongo', async (req, res) => {
   console.log('in get to slash mongo', result[1].drink_name); 
 
   res.send(`here ya go, joe. ${ result[1].drink_name }` ); 
+
+})
+
+app.get('/update', async (req, res) => {
+
+  //get data from the form 
+
+  console.log("in get to slash update:", req.query.ejsFormName); 
+  myName = req.query.ejsFormName; 
+
+  //update in the database. 
+  client.connect; 
+  const collection = client.db("chillAppz").collection("drinkz");
+  await collection.insertOne({ 
+    drink_name: "coldiessss from the render app"
+})
 
 })
 
